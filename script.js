@@ -1,4 +1,4 @@
-const malla = [ /* 👈 (mismo contenido de ramos que ya tienes, lo mantenemos igual) */ ];
+const malla = [ /* 👈 Tu lista completa de ramos, mantenla igual que antes */ ];
 
 function crearMalla() {
   const container = document.getElementById("mallaContainer");
@@ -8,7 +8,7 @@ function crearMalla() {
     const box = document.createElement("div");
     box.className = "semestre";
     box.innerHTML = `<h3>Semestre ${semestre}</h3>`;
-    ramos.forEach(({ nombre, tipo, certificado, prereq }) => {
+    ramos.forEach(({ nombre, tipo, certificado }) => {
       const div = document.createElement("div");
       div.className = `ramo ${tipo}`;
       div.id = nombre;
@@ -21,14 +21,8 @@ function crearMalla() {
       `;
 
       div.innerHTML = `${nombre}${etiquetas}`;
-      div.dataset.prereq = prereq ? prereq.join(",") : "";
+      if (completados.includes(nombre)) div.classList.add("completado");
 
-      // ✅ Cargar estado guardado
-      if (completados.includes(nombre)) {
-        div.classList.add("completado");
-      }
-
-      // ✅ Marcar/desmarcar al hacer clic y guardar
       div.onclick = () => {
         div.classList.toggle("completado");
         guardarProgreso();
@@ -48,20 +42,6 @@ function formatearTipo(tipo) {
   return tipo;
 }
 
-function actualizarDisponibles() {
-  const actual = parseInt(document.getElementById("semestreActual").value);
-  document.querySelectorAll(".ramo").forEach(r => r.classList.remove("disponible"));
-
-  malla.forEach(({ semestre, ramos }) => {
-    if (semestre <= actual + 1) {
-      ramos.forEach(r => {
-        const el = document.getElementById(r.nombre);
-        if (el) el.classList.add("disponible");
-      });
-    }
-  });
-}
-
 function guardarProgreso() {
   const completados = [];
   document.querySelectorAll(".ramo.completado").forEach(el => {
@@ -71,4 +51,3 @@ function guardarProgreso() {
 }
 
 crearMalla();
-actualizarDisponibles();
